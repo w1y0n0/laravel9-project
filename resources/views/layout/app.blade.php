@@ -15,6 +15,7 @@
 
 <body>
     <div class="container py-5">
+        @include('komponen.pesan')
         @yield('isi')
     </div>
 </body>

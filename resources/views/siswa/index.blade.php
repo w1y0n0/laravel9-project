@@ -2,6 +2,7 @@
 
 @section('isi')
     {{-- {{ json_encode($data) }} --}}
+    <a href="/siswa/create" class="btn btn-primary">+Tambah Data Siswa</a>
     <table class="table">
         <thead>
             <tr>
