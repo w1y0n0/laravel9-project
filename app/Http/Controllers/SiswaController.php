@@ -80,7 +80,8 @@ class SiswaController extends Controller
      */
     public function edit($id)
     {
-        //
+        $data = Siswa::where('npm', $id)->first();
+        return view('siswa.edit')->with('data', $data);
     }
 
     /**
@@ -92,7 +93,20 @@ class SiswaController extends Controller
      */
     public function update(Request $request, $id)
     {
-        //
+        $request->validate([
+            'nama' => 'required',
+            'alamat' => 'required',
+        ], [
+            'npm.numeric' => 'NPM wajib angka',
+            'nama.required' => 'Nama wajib diisi',
+            'alamat.required' => 'Alamat wajib diisi',
+        ]);
+        $data = [
+            'nama' => $request->input('nama'),
+            'alamat' => $request->input('alamat'),
+        ];
+        Siswa::where('npm', $id)->update($data);
+        return redirect('/siswa')->with('success', 'Berhasil update data.');
     }
 
     /**
@@ -103,6 +117,7 @@ class SiswaController extends Controller
      */
     public function destroy($id)
     {
-        //
+        Siswa::where('npm', $id)->delete();
+        return redirect('/siswa')->with('success', 'Berhasil hapus data.');
     }
 }
