@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\Siswa;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\File;
 use Illuminate\Support\Facades\Session;
 
 class SiswaController extends Controller
@@ -45,17 +46,28 @@ class SiswaController extends Controller
             'npm' => 'required|numeric',
             'nama' => 'required',
             'alamat' => 'required',
+            'foto' => 'required|mimes:jpeg,jpg,png,gif',
         ], [
             'npm.required' => 'NPM wajib diisi',
             'npm.numeric' => 'NPM wajib angka',
             'nama.required' => 'Nama wajib diisi',
             'alamat.required' => 'Alamat wajib diisi',
+            'foto.required' => 'Foto wajib diisi',
+            'foto.mimes' => 'Foto wajib JPEG/JPG/PNG/GIF',
         ]);
+
+        $foto_file = $request->file('foto');
+        $foto_ekstensi = $foto_file->extension();
+        $foto_nama = date('ymdHis') . "." . $foto_ekstensi;
+        $foto_file->move(public_path('foto'), $foto_nama);
+
         $data = [
             'npm' => $request->input('npm'),
             'nama' => $request->input('nama'),
             'alamat' => $request->input('alamat'),
+            'foto' => $foto_nama
         ];
+
         Siswa::create($data);
         return redirect('siswa')->with('success', 'Data berhasil disimpan.');
     }
@@ -101,10 +113,32 @@ class SiswaController extends Controller
             'nama.required' => 'Nama wajib diisi',
             'alamat.required' => 'Alamat wajib diisi',
         ]);
+
         $data = [
             'nama' => $request->input('nama'),
             'alamat' => $request->input('alamat'),
         ];
+
+        if ($request->hasFile('foto')) {
+            $request->validate([
+                'foto' => 'mimes:jpeg,jpg,png,gif',
+            ], [
+                'foto.mimes' => 'Foto wajib JPEG/JPG/PNG/GIF',
+            ]);
+            $foto_file = $request->file('foto');
+            $foto_ekstensi = $foto_file->extension();
+            $foto_nama = date('ymdHis') . "." . $foto_ekstensi;
+            $foto_file->move(public_path('foto'), $foto_nama); //upload ke direktori
+
+            $data_foto = Siswa::where('npm', $id)->first();
+            File::delete(public_path('foto') . '/' . $data_foto->foto);
+
+            // $data = [
+            //     'foto' => $foto_nama
+            // ];
+            $data['foto'] = $foto_nama;
+        }
+
         Siswa::where('npm', $id)->update($data);
         return redirect('/siswa')->with('success', 'Berhasil update data.');
     }
@@ -117,6 +151,9 @@ class SiswaController extends Controller
      */
     public function destroy($id)
     {
+        $data = Siswa::where('npm', $id)->first();
+        File::delete(public_path('foto') . '/' . $data->foto);
+
         Siswa::where('npm', $id)->delete();
         return redirect('/siswa')->with('success', 'Berhasil hapus data.');
     }
