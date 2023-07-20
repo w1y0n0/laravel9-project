@@ -1,8 +1,9 @@
 <?php
 
-use App\Http\Controllers\HalamanController;
-use App\Http\Controllers\SiswaController;
 use Illuminate\Support\Facades\Route;
+use App\Http\Controllers\SiswaController;
+use App\Http\Controllers\HalamanController;
+use App\Http\Controllers\SessionController;
 
 /*
 |--------------------------------------------------------------------------
@@ -34,9 +35,6 @@ use Illuminate\Support\Facades\Route;
 //     return "<h1>Saya Siswa dengan ID $id dan $nama</h1>";
 // })->where(['id' => '[0-9]+', 'nama' => '[A-Za-z]+']);
 
-// Resource
-Route::resource('siswa', SiswaController::class);
-
 // Routing dari Controller
 // Route::get('siswa', [SiswaController::class, 'index']);
 // Route::get('siswa/{id}', [SiswaController::class, 'detail'])
@@ -45,3 +43,12 @@ Route::resource('siswa', SiswaController::class);
 Route::get('/', [HalamanController::class, 'index']);
 Route::get('/tentang', [HalamanController::class, 'tentang']);
 Route::get('/kontak', [HalamanController::class, 'kontak']);
+
+// Resource
+Route::resource('siswa', SiswaController::class);
+
+Route::get('/sesi', [SessionController::class, 'index']);
+Route::post('/sesi/login', [SessionController::class, 'login']);
+Route::get('/sesi/logout', [SessionController::class, 'logout']);
+Route::get('/sesi/register', [SessionController::class, 'register']);
+Route::post('/sesi/create', [SessionController::class, 'create']);
