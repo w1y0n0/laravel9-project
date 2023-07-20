@@ -45,10 +45,10 @@ Route::get('/tentang', [HalamanController::class, 'tentang']);
 Route::get('/kontak', [HalamanController::class, 'kontak']);
 
 // Resource
-Route::resource('siswa', SiswaController::class);
+Route::resource('siswa', SiswaController::class)->middleware('isLogin');
 
-Route::get('/sesi', [SessionController::class, 'index']);
-Route::post('/sesi/login', [SessionController::class, 'login']);
+Route::get('/sesi', [SessionController::class, 'index'])->middleware('isGuest');
+Route::post('/sesi/login', [SessionController::class, 'login'])->middleware('isGuest');
 Route::get('/sesi/logout', [SessionController::class, 'logout']);
-Route::get('/sesi/register', [SessionController::class, 'register']);
-Route::post('/sesi/create', [SessionController::class, 'create']);
+Route::get('/sesi/register', [SessionController::class, 'register'])->middleware('isGuest');
+Route::post('/sesi/create', [SessionController::class, 'create'])->middleware('isGuest');
